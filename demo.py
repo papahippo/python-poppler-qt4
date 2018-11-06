@@ -12,24 +12,21 @@ Usage:
 """
 
 
-def pdf_view(filename):
+class Pdf_view(QtWidgets.QScrollArea):
     """Return a Scrollarea showing the first page of the specified PDF file."""
-    
-    label = QtWidgets.QLabel()
-    
-    doc = popplerqt5.Poppler.Document.load(filename)
-    doc.setRenderHint(popplerqt5.Poppler.Document.Antialiasing)
-    doc.setRenderHint(popplerqt5.Poppler.Document.TextAntialiasing)
-    
-    page = doc.page(0)
-    image = page.renderToImage()
-    
-    label.setPixmap(QtGui.QPixmap.fromImage(image))
-    
-    area = QtWidgets.QScrollArea()
-    area.setWidget(label)
-    area.setWindowTitle(filename)
-    return area
+    def __init__(self, filename):
+        QtWidgets.QScrollArea.__init__(self)
+        label = QtWidgets.QLabel()
+        doc = popplerqt5.Poppler.Document.load(filename)
+        doc.setRenderHint(popplerqt5.Poppler.Document.Antialiasing)
+        doc.setRenderHint(popplerqt5.Poppler.Document.TextAntialiasing)
+
+        page = doc.page(0)
+        image = page.renderToImage()
+
+        label.setPixmap(QtGui.QPixmap.fromImage(image))
+        self.setWidget(label)
+        self.setWindowTitle(filename)
 
 
 def main():
@@ -40,7 +37,7 @@ def main():
         sys.exit(2)
     
     filename = argv[-1]
-    view = pdf_view(filename)
+    view = Pdf_view(filename)
     view.show()
     sys.exit(app.exec_())
 
